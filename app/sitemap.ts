@@ -1,17 +1,21 @@
-import type { MetadataRoute } from "next";
+import { MetadataRoute } from "next";
 import { products } from "@/lib/products";
 import { shopConfig } from "@/lib/shop-config";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const staticRoutes = ["", "/shop", "/warenkorb", "/kontakt", "/versand", "/widerruf", "/impressum", "/datenschutz", "/agb"].map((path) => ({
-    url: `${shopConfig.siteUrl}${path}`,
+  const base = shopConfig.domain;
+  return [
+    "",
+    "/shop",
+    "/kontakt",
+    "/impressum",
+    "/datenschutz",
+    "/agb",
+    "/widerruf",
+    "/versand",
+    ...products.map((product) => `/produkt/${product.slug}`),
+  ].map((path) => ({
+    url: `${base}${path}`,
     lastModified: new Date(),
   }));
-
-  const productRoutes = products.map((product) => ({
-    url: `${shopConfig.siteUrl}/produkt/${product.slug}`,
-    lastModified: new Date(),
-  }));
-
-  return [...staticRoutes, ...productRoutes];
 }

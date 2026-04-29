@@ -1,79 +1,79 @@
 "use client";
 
 import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
-import { products } from "@/lib/products";
+import type { WoodId } from "@/lib/products";
 
-export type CartLine = { productId: string; quantity: number };
+export type CartItem = {
+  id: string;
+  productSlug: string;
+  productName: string;
+  woodId: WoodId;
+  woodName: string;
+  price: number;
+  quantity: number;
+  image: string;
+};
 
 type CartContextValue = {
-  items: CartLine[];
-  addItem: (productId: string, quantity?: number) => void;
-  removeItem: (productId: string) => void;
-  updateQuantity: (productId: string, quantity: number) => void;
-  clearCart: () => void;
+  items: CartItem[];
   count: number;
-  subtotalCents: number;
+  subtotal: number;
+  addItem: (item: Omit<CartItem, "quantity">, quantity?: number) => void;
+  removeItem: (id: string) => void;
+  updateQuantity: (id: string, quantity: number) => void;
+  clearCart: () => void;
 };
 
 const CartContext = createContext<CartContextValue | null>(null);
-const STORAGE_KEY = "dito-lampen-cart-v1";
+const STORAGE_KEY = "lumenoak-cart";
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
-  const [items, setItems] = useState<CartLine[]>([]);
-  const [hasLoaded, setHasLoaded] = useState(false);
+  const [items, setItems] = useState<CartItem[]>([]);
 
   useEffect(() => {
     try {
-      const stored = window.localStorage.getItem(STORAGE_KEY);
-      if (stored) setItems(JSON.parse(stored));
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) setItems(JSON.parse(saved));
     } catch {
       setItems([]);
-    } finally {
-      setHasLoaded(true);
     }
   }, []);
 
   useEffect(() => {
-    if (hasLoaded) window.localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
-  }, [items, hasLoaded]);
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+    } catch {}
+  }, [items]);
 
   const value = useMemo<CartContextValue>(() => {
     const count = items.reduce((sum, item) => sum + item.quantity, 0);
-    const subtotalCents = items.reduce((sum, item) => {
-      const product = products.find((entry) => entry.id === item.productId);
-      return sum + (product?.priceCents || 0) * item.quantity;
-    }, 0);
+    const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
     return {
       items,
-      addItem: (productId, quantity = 1) => {
+      count,
+      subtotal,
+      addItem: (item, quantity = 1) => {
         setItems((current) => {
-          const product = products.find((entry) => entry.id === productId);
-          if (!product) return current;
-          const existing = current.find((item) => item.productId === productId);
-          if (!existing) return [...current, { productId, quantity: Math.min(quantity, product.stock) }];
-          return current.map((item) =>
-            item.productId === productId
-              ? { ...item, quantity: Math.min(item.quantity + quantity, product.stock) }
-              : item,
-          );
+          const existing = current.find((cartItem) => cartItem.id === item.id);
+          if (existing) {
+            return current.map((cartItem) =>
+              cartItem.id === item.id
+                ? { ...cartItem, quantity: cartItem.quantity + quantity }
+                : cartItem
+            );
+          }
+          return [...current, { ...item, quantity }];
         });
       },
-      removeItem: (productId) => setItems((current) => current.filter((item) => item.productId !== productId)),
-      updateQuantity: (productId, quantity) => {
+      removeItem: (id) => setItems((current) => current.filter((item) => item.id !== id)),
+      updateQuantity: (id, quantity) =>
         setItems((current) =>
           current
-            .map((item) => {
-              if (item.productId !== productId) return item;
-              const product = products.find((entry) => entry.id === productId);
-              return { ...item, quantity: Math.max(1, Math.min(quantity, product?.stock || 1)) };
-            })
-            .filter((item) => item.quantity > 0),
-        );
-      },
+            .map((item) => (item.id === id ? { ...item, quantity: Math.max(1, quantity) } : item))
+            .filter((item) => item.quantity > 0)
+        ),
       clearCart: () => setItems([]),
-      count,
-      subtotalCents,
     };
   }, [items]);
 
@@ -82,6 +82,6 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
 export function useCart() {
   const context = useContext(CartContext);
-  if (!context) throw new Error("useCart must be used within CartProvider");
+  if (!context) throw new Error("useCart must be used inside CartProvider");
   return context;
 }

@@ -1,95 +1,65 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import type { CSSProperties } from "react";
 import Link from "next/link";
+import { useState } from "react";
 import { useCart } from "./cart-provider";
-import { products, type Product } from "@/lib/products";
-import { formatMoney } from "@/lib/format";
+import { formatEuro } from "@/lib/format";
 import { shopConfig } from "@/lib/shop-config";
 
 export function CartClient() {
-  const { items, updateQuantity, removeItem, subtotalCents, clearCart } = useCart();
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const { items, subtotal, removeItem, updateQuantity, clearCart } = useCart();
+  const [message, setMessage] = useState("");
+  const shipping = subtotal >= shopConfig.freeShippingFrom || subtotal === 0 ? 0 : shopConfig.shippingCost;
+  const total = subtotal + shipping;
 
-  const detailedItems = useMemo(
-    () =>
-      items
-        .map((item) => {
-          const product = products.find((entry) => entry.id === item.productId);
-          return product ? { product, quantity: item.quantity } : null;
-        })
-        .filter((item): item is { product: Product; quantity: number } => Boolean(item)),
-    [items],
-  );
-
-  const shippingCents = subtotalCents >= shopConfig.shipping.freeFromCents || subtotalCents === 0 ? 0 : shopConfig.shipping.standardCents;
-  const totalCents = subtotalCents + shippingCents;
-
-  async function checkout() {
-    setError(null);
-    setIsLoading(true);
-    try {
-      const response = await fetch("/api/checkout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ items }),
-      });
-      const data = await response.json();
-      if (!response.ok) throw new Error(data?.error || "Checkout konnte nicht gestartet werden.");
-      clearCart();
-      window.location.href = data.url;
-    } catch (checkoutError) {
-      setError(checkoutError instanceof Error ? checkoutError.message : "Unbekannter Checkout-Fehler.");
-    } finally {
-      setIsLoading(false);
-    }
+  async function startCheckout() {
+    setMessage("Stripe ist vorbereitet, aber echte Zahlungsabwicklung muss mit Live-Keys aktiviert werden.");
   }
 
-  if (detailedItems.length === 0) {
+  if (items.length === 0) {
     return (
-      <div className="info-card">
-        <h2>Dein Warenkorb ist leer.</h2>
-        <p>Such dir eine Lampe aus und leg sie in den Warenkorb.</p>
-        <Link href="/shop" className="btn btn-primary">Zum Shop</Link>
-      </div>
+      <section className="section narrow cart-empty">
+        <h1>Dein Warenkorb ist leer.</h1>
+        <p>Entdecke die LumenOak Kollektion und wähle deine Holzvariante.</p>
+        <Link href="/shop" className="primary-button">Zur Kollektion</Link>
+      </section>
     );
   }
 
   return (
-    <div className="cart-layout">
+    <section className="section cart-page">
       <div>
-        {detailedItems.map(({ product, quantity }) => (
-          <article className="cart-item" key={product.id}>
-            <div className="cart-thumb" style={{ "--lamp-gradient": product.gradient } as CSSProperties} />
-            <div>
-              <strong>{product.name}</strong>
-              <p style={{ color: "var(--muted)", margin: "6px 0" }}>{product.subtitle}</p>
-              <div className="qty">
-                <button onClick={() => updateQuantity(product.id, quantity - 1)} aria-label="Menge verringern">−</button>
-                <span>{quantity}</span>
-                <button onClick={() => updateQuantity(product.id, quantity + 1)} aria-label="Menge erhöhen">+</button>
-                <button className="remove-btn" onClick={() => removeItem(product.id)}>Entfernen</button>
+        <p className="eyebrow">Warenkorb</p>
+        <h1>Deine Auswahl</h1>
+        <div className="cart-items">
+          {items.map((item) => (
+            <article className="cart-item" key={item.id}>
+              <img src={item.image} alt={`${item.productName} ${item.woodName}`} onError={(event) => { event.currentTarget.style.display = "none"; }} />
+              <div>
+                <h3>{item.productName}</h3>
+                <p>{item.woodName}</p>
+                <p>{formatEuro(item.price)}</p>
               </div>
-            </div>
-            <div className="price">{formatMoney(product.priceCents * quantity)}</div>
-          </article>
-        ))}
+              <div className="quantity-controls">
+                <button onClick={() => updateQuantity(item.id, item.quantity - 1)} type="button">−</button>
+                <span>{item.quantity}</span>
+                <button onClick={() => updateQuantity(item.id, item.quantity + 1)} type="button">+</button>
+              </div>
+              <button className="remove-button" onClick={() => removeItem(item.id)} type="button">Entfernen</button>
+            </article>
+          ))}
+        </div>
       </div>
-      <aside className="summary">
+      <aside className="cart-summary">
         <h2>Zusammenfassung</h2>
-        <div className="summary-row"><span>Zwischensumme</span><strong>{formatMoney(subtotalCents)}</strong></div>
-        <div className="summary-row"><span>Versand</span><strong>{shippingCents === 0 ? "Kostenlos" : formatMoney(shippingCents)}</strong></div>
-        <div className="summary-row"><span>Steuern</span><strong>im Checkout berechnet</strong></div>
-        <div className="summary-row total"><span>Gesamt</span><strong>{formatMoney(totalCents)}</strong></div>
-        <p style={{ color: "var(--muted)", lineHeight: 1.6 }}>Sichere Zahlung über Stripe. Versandadresse und finale Steuer-/Zahlungsdaten werden im Checkout erfasst.</p>
-        {error && <p className="notice" style={{ color: "var(--danger)" }}>{error}</p>}
-        <button className="btn btn-primary btn-full" onClick={checkout} disabled={isLoading}>
-          {isLoading ? "Checkout startet..." : "Sicher bezahlen"}
-        </button>
-        <Link className="btn btn-secondary btn-full" href="/shop" style={{ marginTop: 10 }}>Weiter einkaufen</Link>
+        <p><span>Zwischensumme</span><strong>{formatEuro(subtotal)}</strong></p>
+        <p><span>Versand</span><strong>{shipping === 0 ? "kostenlos" : formatEuro(shipping)}</strong></p>
+        <p className="summary-total"><span>Gesamt</span><strong>{formatEuro(total)}</strong></p>
+        <small>Versandkosten klar vor Bestellung. Preise inkl. MwSt. bzw. Kleinunternehmerhinweis später rechtlich finalisieren.</small>
+        <button className="primary-button full" onClick={startCheckout}>Zur Kasse</button>
+        <button className="secondary-button full" onClick={clearCart}>Warenkorb leeren</button>
+        {message && <p className="notice">{message}</p>}
       </aside>
-    </div>
+    </section>
   );
 }

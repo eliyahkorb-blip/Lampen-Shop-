@@ -1,161 +1,213 @@
-export type Product = {
-  id: string;
-  slug: string;
-  name: string;
-  subtitle: string;
-  collection: "Wave" | "Lace" | "Edge" | "Aura";
-  description: string;
-  longDescription: string;
-  priceCents: number;
-  compareAtCents?: number;
-  stock: number;
-  madeToOrder: boolean;
-  isBestseller?: boolean;
-  dimensions: string;
-  material: string;
-  light: string;
-  energy: string;
-  color: string;
-  base: string;
-  features: string[];
-  gradient: string;
+export type WoodId = "eiche" | "ahorn" | "schwarz" | "nussbaum";
+
+export type ProductVariant = {
+  woodId: WoodId;
+  price: number;
+  images: string[];
 };
 
-export const products: Product[] = [
+export type Product = {
+  slug: string;
+  name: string;
+  basePrice: number;
+  category: string;
+  dimensions: string;
+  shortDescription: string;
+  description: string;
+  keywords: string[];
+  variants: Record<WoodId, ProductVariant>;
+  specs: Record<string, string>;
+};
+
+export const woodOptions: Array<{
+  id: WoodId;
+  name: string;
+  shortName: string;
+  priceAdd: number;
+  description: string;
+  colorHint: string;
+}> = [
   {
-    id: "wave-mini-oak",
-    slug: "wave-mini-oak",
-    name: "Wave Mini Oak",
-    subtitle: "Sanfte Wellenform für Nachtisch und Sideboard",
-    collection: "Wave",
-    description: "Kleine Tischlampe mit organischer Waveform, warmem Licht und runder Eichenbasis.",
-    longDescription:
-      "Die Wave Mini Oak ist deine erste Signature-Lampe: kompakt, hochwertig und perfekt für Schlafzimmer, Flur oder gemütliche Ecken. Der 3D-gedruckte Lampenschirm streut das Licht weich, während das runde Eiche-Holzbrett der Lampe einen natürlichen Premium-Look gibt.",
-    priceCents: 6900,
-    stock: 12,
-    madeToOrder: true,
-    isBestseller: true,
-    dimensions: "ca. 18 cm hoch · 12 cm Ø",
-    material: "PLA/PETG nach Auswahl, Eiche massiv geölt",
-    light: "warmweißes LED-Modul, USB-C",
-    energy: "LED, ca. 3–5 W",
-    color: "Cremeweiß transluzent",
-    base: "runde Eichenbasis, geschliffen und geölt",
-    features: ["Handgefertigt in Kleinserie", "Warmweißes Ambient-Light", "Leichter Schirm mit Wave-Struktur", "Echte Eichenbasis"],
-    gradient: "radial-gradient(circle at 35% 25%, #fff8df, #d9b36b 34%, #51351f 82%)",
+    id: "eiche",
+    name: "Eiche",
+    shortName: "Eiche",
+    priceAdd: 0,
+    description: "Warm, klassisch und zeitlos. Eiche passt zu fast jedem Wohnstil.",
+    colorHint: "#B98239",
   },
   {
-    id: "lace-glow-oak",
-    slug: "lace-glow-oak",
-    name: "Lace Glow Oak",
-    subtitle: "Lochige Struktur mit spannendem Lichtspiel",
-    collection: "Lace",
-    description: "Designlampe mit perforierter Oberfläche, die schöne Lichtpunkte an Wand und Tisch erzeugt.",
-    longDescription:
-      "Lace Glow Oak ist für alle, die mehr als nur eine Lampe wollen. Die offene, lochige Form erzeugt ein lebendiges Lichtspiel und wirkt ausgeschaltet wie ein kleines Designobjekt. Ideal als Geschenk, Nachttischlampe oder Akzent auf Kommode und Regal.",
-    priceCents: 7900,
-    stock: 8,
-    madeToOrder: true,
-    dimensions: "ca. 21 cm hoch · 13 cm Ø",
-    material: "transluzentes PLA/PETG, Eiche massiv geölt",
-    light: "warmweißes LED-Modul, USB-C",
-    energy: "LED, ca. 3–5 W",
-    color: "Ivory / Warmweiß",
-    base: "runde Eichenbasis mit Kabelführung",
-    features: ["Perforiertes Lichtmuster", "Sehr dekorativ bei Dunkelheit", "Jede Lampe leicht individuell", "USB-C Anschluss"],
-    gradient: "radial-gradient(circle at 50% 30%, #fff2c2, #f0a84a 38%, #4b261a 85%)",
+    id: "ahorn",
+    name: "Ahorn",
+    shortName: "Ahorn",
+    priceAdd: 0,
+    description: "Hell, ruhig und clean. Ahorn wirkt besonders leicht und skandinavisch.",
+    colorHint: "#E8D1A6",
   },
   {
-    id: "edge-cube-oak",
-    slug: "edge-cube-oak",
-    name: "Edge Cube Oak",
-    subtitle: "Kantige Form, klarer moderner Look",
-    collection: "Edge",
-    description: "Minimalistische Lampe mit kantigem Schirm und hochwertigem Holzsockel.",
-    longDescription:
-      "Edge Cube Oak bringt klare Linien in moderne Wohnungen. Die kantige Silhouette passt besonders gut zu Schreibtisch, Regal, TV-Lowboard oder modernen Schlafzimmern. Der Schirm ist so gestaltet, dass er elegant wirkt, aber trotzdem angenehm weiches Licht abgibt.",
-    priceCents: 8900,
-    stock: 10,
-    madeToOrder: true,
-    dimensions: "ca. 20 cm hoch · 12 × 12 cm",
-    material: "PLA/PETG, Eiche massiv geölt",
-    light: "warmweißes LED-Modul, USB-C",
-    energy: "LED, ca. 3–5 W",
-    color: "Mattweiß / transluzent",
-    base: "Eichenbasis, rund oder eckig konfigurierbar",
-    features: ["Moderner kantiger Look", "Ideal für minimalistische Räume", "Blendarmes Ambient-Light", "Kleinserie statt Massenware"],
-    gradient: "linear-gradient(135deg, #f7ead2, #c98d49 40%, #2b2018 88%)",
+    id: "schwarz",
+    name: "Schwarz geölte Eiche",
+    shortName: "Schwarz",
+    priceAdd: 10,
+    description: "Modern, kontrastreich und elegant. Perfekt für dunkle oder minimalistische Einrichtungen.",
+    colorHint: "#16130F",
   },
   {
-    id: "aura-dome-oak",
-    slug: "aura-dome-oak",
-    name: "Aura Dome Oak",
-    subtitle: "Weiche Kuppelform mit ruhiger Lichtfläche",
-    collection: "Aura",
-    description: "Runde Ambient-Lampe mit sanftem Glow für gemütliche Räume.",
-    longDescription:
-      "Aura Dome Oak ist die ruhigste Lampe der Kollektion. Die Kuppelform verteilt das Licht gleichmäßig und schafft ein warmes Ambiente, ohne aufdringlich zu sein. Besonders schön für Schlafzimmer, Leseecken und Wohnbereiche.",
-    priceCents: 7400,
-    stock: 15,
-    madeToOrder: true,
-    dimensions: "ca. 17 cm hoch · 14 cm Ø",
-    material: "transluzentes PLA/PETG, Eiche massiv geölt",
-    light: "warmweißes LED-Modul, USB-C",
-    energy: "LED, ca. 3–5 W",
-    color: "Opalweiß",
-    base: "runde Eichenbasis, geölt",
-    features: ["Sehr weiches Licht", "Zeitlose runde Form", "Kompakt und geschenktauglich", "Warm und gemütlich"],
-    gradient: "radial-gradient(circle at 50% 22%, #fff9ef, #d4a35d 48%, #523621 92%)",
-  },
-  {
-    id: "wave-tall-oak",
-    slug: "wave-tall-oak",
-    name: "Wave Tall Oak",
-    subtitle: "Höhere Waveform als Statement-Stück",
-    collection: "Wave",
-    description: "Größere Tischlampe mit eleganter, vertikaler Wellenstruktur.",
-    longDescription:
-      "Wave Tall Oak ist das Statement-Modell für Sideboard, Wohnzimmer oder Empfangsbereich. Die vertikale Wellenstruktur wirkt hochwertig und modern, ohne kalt zu sein. Durch die Eichenbasis bleibt die Lampe natürlich und wohnlich.",
-    priceCents: 9900,
-    compareAtCents: 11900,
-    stock: 6,
-    madeToOrder: true,
-    dimensions: "ca. 28 cm hoch · 13 cm Ø",
-    material: "PLA/PETG, Eiche massiv geölt",
-    light: "warmweißes LED-Modul, USB-C",
-    energy: "LED, ca. 4–6 W",
-    color: "Cremeweiß transluzent",
-    base: "runde Eichenbasis, optional größer",
-    features: ["Premium-Modell", "Starker Blickfang", "Vertikale Wave-Struktur", "Made-to-order"],
-    gradient: "radial-gradient(circle at 42% 20%, #fff6d8, #c88e4e 42%, #3b2518 90%)",
-  },
-  {
-    id: "lace-mini-gift",
-    slug: "lace-mini-gift",
-    name: "Lace Mini Gift",
-    subtitle: "Kleine Geschenk-Lampe mit Charakter",
-    collection: "Lace",
-    description: "Kompaktes Geschenkmodell mit perforierter Struktur und warmer Lichtwirkung.",
-    longDescription:
-      "Lace Mini Gift ist bewusst klein gehalten und eignet sich perfekt als Geschenk, Deko-Licht oder Nachtlicht. Die perforierte Struktur erzeugt eine besondere Lichtwirkung und macht jede Ecke sofort gemütlicher.",
-    priceCents: 5900,
-    stock: 20,
-    madeToOrder: true,
-    dimensions: "ca. 14 cm hoch · 10 cm Ø",
-    material: "PLA/PETG, Eiche massiv geölt",
-    light: "warmweißes LED-Modul, USB-C",
-    energy: "LED, ca. 2–4 W",
-    color: "Ivory / Warmweiß",
-    base: "runde Eichenbasis mini",
-    features: ["Perfekt als Geschenk", "Kompakt", "Gemütliches Lichtspiel", "Preiswerter Einstieg"],
-    gradient: "radial-gradient(circle at 55% 22%, #fff3c7, #e3a957 40%, #4d2d1b 88%)",
+    id: "nussbaum",
+    name: "Nussbaum",
+    shortName: "Nussbaum",
+    priceAdd: 15,
+    description: "Dunkel, hochwertig und wohnlich. Nussbaum wirkt besonders edel und ruhig.",
+    colorHint: "#6A3F22",
   },
 ];
 
-export function getProductBySlug(slug: string) {
+const commonSpecs = {
+  Lichtquelle: "Fest integriertes LED-Modul",
+  Leistung: "ca. 1–3 W",
+  Lichtfarbe: "Warmweiß, ca. 2700–3000 K",
+  Anschluss: "USB-C",
+  Betrieb: "5V USB-Netzteil oder geeignete Powerbank",
+  Schirm: "Transluzentes PLA/PETG",
+  Sockel: "Massivholz, geschliffen und geölt",
+  Nutzung: "Innenbereich",
+  Fertigung: "Made-to-order",
+  Lieferzeit: "5–10 Werktage",
+};
+
+function variant(slug: string, woodId: WoodId, price: number): ProductVariant {
+  return {
+    woodId,
+    price,
+    images: [
+      `/products/${slug}-${woodId}-front.webp`,
+      `/products/${slug}-${woodId}-anschluss.webp`,
+      `/products/${slug}-${woodId}-raum.webp`,
+    ],
+  };
+}
+
+export const products: Product[] = [
+  {
+    slug: "wave-mini",
+    name: "Wave Mini",
+    basePrice: 69,
+    category: "Ruhig & minimalistisch",
+    dimensions: "ca. 20 cm hoch, Ø 12 cm",
+    shortDescription: "Sanfte Wellen, warmes Licht und ein ruhiger Look für Nachttisch, Sideboard oder Wohnzimmer.",
+    description:
+      "Wave Mini ist die minimalistische Tischlampe von LumenOak mit organischer Wellenstruktur. Der 3D-gedruckte Schirm verteilt das warmweiße Licht weich und gleichmäßig, während der massive Holzsockel natürliche Wärme in den Raum bringt.",
+    keywords: ["3D gedruckte Lampe", "Tischlampe", "Nachttischlampe", "Wave Lampe"],
+    specs: commonSpecs,
+    variants: {
+      eiche: variant("wave-mini", "eiche", 69),
+      ahorn: variant("wave-mini", "ahorn", 69),
+      schwarz: variant("wave-mini", "schwarz", 79),
+      nussbaum: variant("wave-mini", "nussbaum", 84),
+    },
+  },
+  {
+    slug: "lace-glow",
+    name: "Lace Glow",
+    basePrice: 79,
+    category: "Filigran & dekorativ",
+    dimensions: "ca. 20 cm hoch, Ø 12 cm",
+    shortDescription: "Filigranes Muster und atmosphärisches Licht mit besonderem Schatteneffekt.",
+    description:
+      "Lace Glow kombiniert eine feine, durchbrochene Struktur mit warmem LED-Licht. Das Muster erzeugt ein lebendiges Lichtspiel und macht die Lampe besonders dekorativ – ideal für Wohnzimmer, Regale oder Sideboards.",
+    keywords: ["Designlampe", "Lichtspiel", "Ambient Light", "3D gedruckte Lampe"],
+    specs: commonSpecs,
+    variants: {
+      eiche: variant("lace-glow", "eiche", 79),
+      ahorn: variant("lace-glow", "ahorn", 79),
+      schwarz: variant("lace-glow", "schwarz", 89),
+      nussbaum: variant("lace-glow", "nussbaum", 94),
+    },
+  },
+  {
+    slug: "halo",
+    name: "Halo",
+    basePrice: 79,
+    category: "Ruhig & minimalistisch",
+    dimensions: "ca. 18 cm hoch, Ø 14 cm",
+    shortDescription: "Rund, weich und beruhigend – perfekt als Nachtlicht oder Ambient Light.",
+    description:
+      "Halo setzt auf eine ruhige, runde Form mit feiner Linienstruktur. Das Licht wirkt weich, harmonisch und besonders gemütlich. Ideal für Schlafzimmer, Nachttisch oder ruhige Wohnbereiche.",
+    keywords: ["Nachtlicht", "Ambient Light", "runde Tischlampe", "Designleuchte Holz"],
+    specs: commonSpecs,
+    variants: {
+      eiche: variant("halo", "eiche", 79),
+      ahorn: variant("halo", "ahorn", 79),
+      schwarz: variant("halo", "schwarz", 89),
+      nussbaum: variant("halo", "nussbaum", 94),
+    },
+  },
+  {
+    slug: "edge",
+    name: "Edge",
+    basePrice: 89,
+    category: "Modern & geometrisch",
+    dimensions: "ca. 19 cm hoch, 12 × 12 cm",
+    shortDescription: "Geometrisch, klar und modern – für alle, die kantiges Design mögen.",
+    description:
+      "Edge bringt klare Linien und moderne Geometrie in die LumenOak Kollektion. Die markante Form wirkt clean und hochwertig, bleibt durch das warme LED-Licht aber wohnlich und angenehm.",
+    keywords: ["moderne Tischlampe", "geometrische Lampe", "Designlampe Holzsockel"],
+    specs: commonSpecs,
+    variants: {
+      eiche: variant("edge", "eiche", 89),
+      ahorn: variant("edge", "ahorn", 89),
+      schwarz: variant("edge", "schwarz", 99),
+      nussbaum: variant("edge", "nussbaum", 104),
+    },
+  },
+  {
+    slug: "column",
+    name: "Column",
+    basePrice: 89,
+    category: "Modern & minimalistisch",
+    dimensions: "ca. 24 cm hoch, Ø 10 cm",
+    shortDescription: "Schlank, vertikal und elegant – ein ruhiger Lichtkörper für moderne Räume.",
+    description:
+      "Column ist die minimalistische Säulenlampe der Kollektion. Die vertikale Rippenstruktur verteilt das Licht gleichmäßig und sorgt für eine elegante Präsenz auf Sideboards, Regalen oder Nachttischen.",
+    keywords: ["Säulenlampe", "USB-C Lampe", "moderne Tischlampe", "Ambient Light"],
+    specs: commonSpecs,
+    variants: {
+      eiche: variant("column", "eiche", 89),
+      ahorn: variant("column", "ahorn", 89),
+      schwarz: variant("column", "schwarz", 99),
+      nussbaum: variant("column", "nussbaum", 104),
+    },
+  },
+  {
+    slug: "bloom",
+    name: "Bloom",
+    basePrice: 99,
+    category: "Organisch & besonders",
+    dimensions: "ca. 20 cm hoch, Ø 13 cm",
+    shortDescription: "Organisch, weich und besonders – inspiriert von natürlichen Formen.",
+    description:
+      "Bloom ist eines der ausdrucksstärksten Modelle der LumenOak Kollektion. Die blütenartige Form erzeugt ein warmes, weiches Lichtbild und macht die Lampe zu einem besonderen Designobjekt im Raum.",
+    keywords: ["organische Lampe", "handgemachte Lampe", "Designobjekt", "3D gedruckte Lampe"],
+    specs: commonSpecs,
+    variants: {
+      eiche: variant("bloom", "eiche", 99),
+      ahorn: variant("bloom", "ahorn", 99),
+      schwarz: variant("bloom", "schwarz", 109),
+      nussbaum: variant("bloom", "nussbaum", 114),
+    },
+  },
+];
+
+export function getProduct(slug: string): Product | undefined {
   return products.find((product) => product.slug === slug);
 }
 
-export function getProductById(id: string) {
-  return products.find((product) => product.id === id);
-}
+export const safetyNotice =
+  "Die LumenOak Lampen sind für ein fest integriertes warmweißes LED-Modul entwickelt. Das Lichtsystem wird über USB-C betrieben und ist auf geringe Wärmeentwicklung ausgelegt. Nicht für klassische Glühbirnen, Halogen- oder andere heiße Leuchtmittel geeignet.";
+
+export const warnings = [
+  "Nur für Innenräume geeignet.",
+  "Nicht abdecken.",
+  "Nicht mit Glühbirnen, Halogenlampen oder heißen Leuchtmitteln verwenden.",
+  "Nur mit dem vorgesehenen LED-System betreiben.",
+  "Von direkter Hitze, offenem Feuer und starker Sonneneinstrahlung fernhalten.",
+];

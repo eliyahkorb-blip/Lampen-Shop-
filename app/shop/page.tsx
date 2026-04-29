@@ -1,27 +1,27 @@
-import type { Metadata } from "next";
 import { ProductCard } from "@/components/product-card";
 import { products } from "@/lib/products";
 
-export const metadata: Metadata = {
-  title: "Shop",
-  description: "Alle 3D-gedruckten Designlampen mit Eichenbasis kaufen.",
+export const metadata = {
+  title: "Shop – LumenOak Designlampen",
+  description: "Entdecke 3D-gedruckte Tischlampen mit echtem Holzsockel, USB-C LED und warmweißem Licht.",
 };
 
 export default function ShopPage() {
-  const collections = Array.from(new Set(products.map((product) => product.collection)));
   return (
-    <section className="container">
-      <div className="page-title">
-        <span className="eyebrow">Shop</span>
-        <h1>Alle Lampen</h1>
-        <p className="lead">Wähle dein Modell: organische Waveform, lochige Lichtstruktur, kantiger Look oder ruhiger Dome-Glow.</p>
+    <section className="section">
+      <div className="section-header">
+        <div>
+          <p className="eyebrow">Shop</p>
+          <h1>Die LumenOak Kollektion</h1>
+          <p className="lead">
+            Wähle dein Design und danach die passende Holzvariante: Eiche, Ahorn, schwarz geölte Eiche oder Nussbaum.
+          </p>
+        </div>
       </div>
-      <div className="shop-filters" aria-label="Kollektionen">
-        <span className="filter-chip">Alle</span>
-        {collections.map((collection) => <span className="filter-chip" key={collection}>{collection}</span>)}
-      </div>
-      <div className="grid products-grid" style={{ paddingBottom: 72 }}>
-        {products.map((product) => <ProductCard key={product.id} product={product} />)}
+      <div className="product-grid">
+        {products.map((product) => (
+          <ProductCard key={product.slug} product={product} />
+        ))}
       </div>
     </section>
   );

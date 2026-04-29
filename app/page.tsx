@@ -1,103 +1,109 @@
 import Link from "next/link";
 import { ProductCard } from "@/components/product-card";
-import { products } from "@/lib/products";
+import { products, woodOptions } from "@/lib/products";
 import { shopConfig } from "@/lib/shop-config";
 
+const faq = [
+  ["Wie werden die Lampen betrieben?", "Alle LumenOak Lampen werden über ein fest integriertes warmweißes LED-Modul mit USB-C betrieben."],
+  ["Kann ich eine normale Glühbirne einsetzen?", "Nein. Die Lampen sind nicht für klassische Glühbirnen, Halogenlampen oder heiße Leuchtmittel geeignet."],
+  ["Welche Holzarten gibt es?", "Eiche, Ahorn, schwarz geölte Eiche und Nussbaum."],
+  ["Wird jede Lampe auf Bestellung gefertigt?", "Ja. Jede Lampe wird made-to-order gefertigt und handmontiert."],
+  ["Wie lange dauert die Lieferung?", "In der Regel 5–10 Werktage, abhängig vom Modell und der aktuellen Auftragslage."],
+  ["Sind kleine Unterschiede normal?", "Ja. Holz ist ein Naturmaterial und 3D-Druck kann minimale Unterschiede zeigen. Jede Lampe ist dadurch leicht individuell."],
+];
+
 export default function HomePage() {
-  const featured = products.slice(0, 3);
-
-  const organizationJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    name: shopConfig.name,
-    url: shopConfig.siteUrl,
-    email: shopConfig.email,
-  };
-
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }} />
-      <section className="container hero">
+      <section className="hero">
         <div>
-          <span className="eyebrow">Made-to-order · 3D-Druck · Eiche</span>
-          <h1>Designlampen, die warm wirken statt kalt aussehen.</h1>
-          <p className="lead">
-            Kleine Tischlampen, Nachtlampen und Ambient Lights: 3D-gedruckte Formen auf echtem Eichenholz – handgefertigt in Kleinserie, perfekt als Geschenk oder für gemütliche Räume.
+          <p className="eyebrow">3D-Druck · Massivholz · Warmweiß</p>
+          <h1>Designlampen, die Wärme in Form bringen.</h1>
+          <p>
+            3D-gedruckte Tischlampen auf echtem Holzsockel – warmweiß, modern und auf Bestellung gefertigt. Für Nachttisch, Sideboard und gemütliche Wohnräume.
           </p>
           <div className="hero-actions">
-            <Link href="/shop" className="btn btn-primary">Kollektion ansehen</Link>
-            <Link href="#prozess" className="btn btn-secondary">Wie sie entstehen</Link>
+            <Link href="/shop" className="primary-button">Kollektion ansehen</Link>
+            <Link href="#materialien" className="secondary-button">Materialien entdecken</Link>
+          </div>
+          <div className="trust-row">
+            <span>Handmontiert</span>
+            <span>USB-C LED</span>
+            <span>Echte Holzsockel</span>
+            <span>Made-to-order</span>
+            <span>{shopConfig.productionTime}</span>
           </div>
         </div>
-        <div className="hero-card" aria-label="Visual einer leuchtenden 3D-Lampe auf Eichenbasis">
-          <div className="hero-lamp" />
-          <div className="hero-base" />
-          <div className="hero-note">
-            <span><strong>Warmweiß</strong>LED Ambient-Light</span>
-            <span><strong>Eiche</strong>geschliffen & geölt</span>
+        <div className="hero-card">
+          <div className="hero-visual">
+            <div className="lamp-fallback large wave-mini"><span /></div>
           </div>
         </div>
       </section>
 
-      <section className="container trust-strip" aria-label="Vorteile">
-        <div className="trust-item"><strong>Handmade</strong><span>Kleinserie statt Massenware.</span></div>
-        <div className="trust-item"><strong>2–5 Werktage</strong><span>Fertigung je nach Modell.</span></div>
-        <div className="trust-item"><strong>USB-C LED</strong><span>Einfach, sparsam, warm.</span></div>
-        <div className="trust-item"><strong>Gratis Versand</strong><span>ab 120 € Bestellwert.</span></div>
-      </section>
-
-      <section className="container section">
-        <div className="section-head">
+      <section id="kollektion" className="section">
+        <div className="section-header">
           <div>
-            <span className="eyebrow">Bestseller</span>
-            <h2>Startkollektion</h2>
+            <p className="eyebrow">Kollektion</p>
+            <h2>Lampen für warme Räume.</h2>
           </div>
-          <Link href="/shop" className="btn btn-secondary">Alle ansehen</Link>
+          <Link href="/shop" className="text-link">Alle ansehen</Link>
         </div>
-        <div className="grid products-grid">
-          {featured.map((product) => <ProductCard key={product.id} product={product} />)}
-        </div>
-      </section>
-
-      <section className="container section" id="prozess">
-        <div className="section-head">
-          <div>
-            <span className="eyebrow">Fertigung</span>
-            <h2>Vom digitalen Design zur echten Lampe.</h2>
-          </div>
-        </div>
-        <div className="grid two-grid">
-          <div className="info-card">
-            <h3>3D-gedruckter Schirm</h3>
-            <p>Jedes Modell wird mit strukturierter Oberfläche gedruckt: Waveform, Lace-Lochmuster, kantige Edge-Form oder ruhige Dome-Silhouette. Dadurch entstehen kleine Einzelstücke mit eigener Lichtwirkung.</p>
-          </div>
-          <div className="info-card">
-            <h3>Eichenbasis</h3>
-            <p>Der Holzfuß wird geschliffen, geölt und mit Kabelführung vorbereitet. Der Mix aus warmem Holz und modernem 3D-Druck macht die Lampen wohnlich und trotzdem besonders.</p>
-          </div>
-          <div className="info-card">
-            <h3>Warmweißes Licht</h3>
-            <p>Die Lampen sind als Ambient- und Nachtlicht gedacht. Das LED-Modul ist sparsam und bewusst nicht grell, damit es abends gemütlich bleibt.</p>
-          </div>
-          <div className="info-card">
-            <h3>Made-to-order</h3>
-            <p>Viele Lampen werden nach Bestellung gefertigt. So bleibt die Produktion schlank, individuell und hochwertig – ideal für kleine Serien und neue Designs.</p>
-          </div>
+        <div className="product-grid">
+          {products.map((product) => <ProductCard key={product.slug} product={product} />)}
         </div>
       </section>
 
-      <section className="container section" id="faq">
-        <div className="section-head">
+      <section id="materialien" className="section">
+        <div className="section-header">
           <div>
-            <span className="eyebrow">FAQ</span>
-            <h2>Häufige Fragen</h2>
+            <p className="eyebrow">Materialien</p>
+            <h2>Echtes Holz. Warmes Licht. Klare Formen.</h2>
           </div>
         </div>
-        <div className="grid two-grid">
-          <div className="info-card"><h3>Ist das echtes Holz?</h3><p>Ja, die Basis ist als Eiche-Massivholz vorgesehen. Passe Maße und Holzdetails in <code>lib/products.ts</code> an, falls du andere Basen nutzt.</p></div>
-          <div className="info-card"><h3>Kann ich Farben ändern?</h3><p>Ja, im Shop sind die Startfarben hinterlegt. Für echte Varianten kannst du weitere Produkte oder Variantenauswahl ergänzen.</p></div>
-          <div className="info-card"><h3>Wie läuft die Zahlung?</h3><p>Der Shop nutzt Stripe Checkout. Sobald deine Stripe-Keys hinterlegt sind, können echte Zahlungen aktiviert werden.</p></div>
-          <div className="info-card"><h3>Ist der Shop rechtlich fertig?</h3><p>Die Seiten sind vorbereitet, aber Impressum, Datenschutz, AGB und Widerruf müssen vor Launch mit deinen echten Unternehmensdaten geprüft werden.</p></div>
+        <p className="lead">
+          Jede LumenOak Lampe kombiniert einen 3D-gedruckten Schirm mit einem echten Holzsockel. Je nach Modell stehen Eiche, Ahorn, schwarz geölte Eiche und Nussbaum zur Auswahl.
+        </p>
+        <div className="material-grid">
+          {woodOptions.map((wood) => (
+            <article className="material-card" key={wood.id}>
+              <div className="material-swatch" style={{ background: wood.colorHint }} />
+              <h3>{wood.name}</h3>
+              <p>{wood.description}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section id="fertigung" className="section dark-band">
+        <div className="section-header">
+          <div>
+            <p className="eyebrow">Fertigung & Technik</p>
+            <h2>Für LED entwickelt, nicht für heiße Leuchtmittel.</h2>
+          </div>
+        </div>
+        <div className="feature-grid">
+          <article className="content-card"><h3>3D-gedruckter Schirm</h3><p>Transluzentes PLA/PETG mit warmer Lichtstreuung und klarer Formgebung.</p></article>
+          <article className="content-card"><h3>USB-C LED</h3><p>Fest integriertes warmweißes LED-Modul mit geringer Wärmeentwicklung.</p></article>
+          <article className="content-card"><h3>Massivholzsockel</h3><p>Geschliffen, geölt und handmontiert – jede Holzmaserung ist individuell.</p></article>
+          <article className="content-card"><h3>Made-to-order</h3><p>Produktion nach Bestellung, dadurch weniger Lagerware und mehr Individualität.</p></article>
+        </div>
+      </section>
+
+      <section id="faq" className="section">
+        <div className="section-header">
+          <div>
+            <p className="eyebrow">FAQ</p>
+            <h2>Häufige Fragen.</h2>
+          </div>
+        </div>
+        <div className="faq-list">
+          {faq.map(([question, answer]) => (
+            <details key={question}>
+              <summary>{question}</summary>
+              <p>{answer}</p>
+            </details>
+          ))}
         </div>
       </section>
     </>

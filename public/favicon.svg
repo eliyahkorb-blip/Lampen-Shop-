@@ -1,9 +1,5 @@
-<svg width="128" height="128" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect width="128" height="128" rx="34" fill="#12100D"/>
-  <ellipse cx="64" cy="90" rx="34" ry="12" fill="#B77B3E"/>
-  <path d="M64 18C83 18 94 38 88 59C84 75 75 84 64 84C53 84 44 75 40 59C34 38 45 18 64 18Z" fill="url(#g)"/>
-  <path d="M51 24C58 34 56 72 47 80" stroke="white" stroke-opacity=".28" stroke-width="4"/>
-  <path d="M64 20C70 36 69 70 64 84" stroke="white" stroke-opacity=".22" stroke-width="4"/>
-  <path d="M77 24C70 36 72 72 81 80" stroke="white" stroke-opacity=".22" stroke-width="4"/>
-  <defs><radialGradient id="g" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(61 30) rotate(90) scale(58)"><stop stop-color="#FFF7D3"/><stop offset=".45" stop-color="#F4B95D"/><stop offset="1" stop-color="#6B3E20"/></radialGradient></defs>
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="64" height="64" rx="16" fill="#111111"/>
+  <path d="M32 9C41 17 47 25 47 34C47 43 40 50 32 50C24 50 17 43 17 34C17 25 23 17 32 9Z" fill="#C79A4A"/>
+  <path d="M32 18C37 24 40 29 40 34C40 39 36 43 32 43C28 43 24 39 24 34C24 29 27 24 32 18Z" fill="#FFF8EA"/>
 </svg>
